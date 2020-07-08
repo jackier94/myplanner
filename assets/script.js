@@ -5,51 +5,67 @@ $(document).ready(function () {
   $("#currentDay").text(currentDay.format("llll"));
 
   console.log(currentDay);
-});
 
-var locallyStoredData = localStorage.getItem("#textarea");
-// ARRAY FOR HOURS IN CALENDAR
+  // ARRAY FOR HOURS IN CALENDAR
 
-var dailyTask = $("#textarea").val;
+  var dailyTask = $("#textarea").val();
 
-var indexOfHoursArr = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+  var indexOfHoursArr = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 
-var columHours = [9, 10, 11, 12, 1, 2, 3, 4, 5];
+  var columHours = [9, 10, 11, 12, 1, 2, 3, 4, 5];
 
-// var index = console.log(columHours);
+  // var index = console.log(columHours);
 
-for (var i = 0; i < columHours.length; i++);
-{
-  // for (let hour = 9; hour <= 17; hour++) {
-  //   let index = hour - 9;
+  for (var index = 0; index < columHours.length; index++) {
+    //  for (let hour = 9; hour <= 17; hour++) {
+    //    let hourIndex = hour - 9;
 
-  //   console.log(columHours);
+    console.log(columHours.length + "- index:" + index);
+    var newDiv = $("<div>");
+    newDiv.addClass("row time-block");
+    var hourElement = $("<div>");
+    hourElement.text(columHours[index]);
+    hourElement.attr("data-value", indexOfHoursArr[index]);
 
-  var hourElement = $("<div>");
-  hourElement.text(columHours[i]);
-  hourElement.attr("data-value", indexOfHoursArr[i]);
+    //   console.log(hourElement);
 
-  //   console.log(hourElement);
+    hourElement.addClass("hour column-md-3 text-primary text-center pt-2");
+    var dailyTaskInput = $("<textarea>");
+    console.log(columHours[index]);
+    dailyTaskInput.addClass("description col-md-8");
+    dailyTaskInput.attr("id", "textarea");
+    //dailyTaskInput.attr("row", "1");
+    var $saveBtn = $("<button>");
+    $saveBtn.addClass("col-md-1 fa fa-save  text-wrap");
 
-  hourElement.addClass("time-block hour col-md-1 text-center pt-2 row");
-  var dailyTaskInput = $("<textarea>");
-  dailyTaskInput.addClass("description col-md-9 row");
-  dailyTaskInput.attr("id", "textarea");
-  dailyTaskInput.attr("row", "1");
-  var $saveBtn = $("<button>");
-  $saveBtn.addClass("col-md-2 fa fa-save  text-wrap row");
+    if (indexOfHoursArr[index] == moment().format("kk")) {
+      dailyTaskInput.addClass("present");
+    } else if (indexOfHoursArr[index] < moment().format("kk")) {
+      dailyTaskInput.addClass("past");
+    } else {
+      dailyTaskInput.addClass("future");
+    }
+    newDiv.append(hourElement, dailyTaskInput, $saveBtn);
 
-  if (indexOfHoursArr[i] == moment().format("kk")) {
-    dailyTaskInput.addClass("present");
-  } else if (indexOfHoursArr[i] < moment().format("kk")) {
-    dailyTaskInput.addClass("past");
-  } else {
-    dailyTaskInput.addClass("future");
+    $("#schedulerDiv").append(newDiv);
   }
+  //when user presses save
+  $(".fa-save").click(function () {
+    console.log("trying to save data");
+    var id = $(this).siblings(".hour").attr("data-value"); //select the parent id for the save button
+    var text = $(this).siblings(".description").val(); // take the text area of event class
+    console.log(id, text);
+    localStorage.setItem(id, text); //set the key and value into local storage
+  });
+  $(".description").each(function () {
+    var id = $(this).siblings(".hour").attr("data-value");
+    var locallyStoredData = localStorage.getItem(id);
+    console.log(id);
+    $(this).val(locallyStoredData);
 
-  $("#schedulerDiv").append(hourElement, dailyTaskInput, $saveBtn);
-}
-
+    //localstorage getitem
+  });
+});
 //adding rows to scheduler
 
 // $(".table").append("<tr><td>hour</><td>");
